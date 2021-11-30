@@ -15,10 +15,6 @@ variable "global_tags" {
 }
 ####################################################################################################
 ## VPC
-variable "vpc_name" {
-  description = "The Name of the VPC."
-  type        = string
-}
 variable "vpc_cidr" {
   description = "The CIDR of the VPC."
   type        = string

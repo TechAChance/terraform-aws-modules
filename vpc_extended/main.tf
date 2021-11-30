@@ -5,7 +5,7 @@ module "vpc" {
   # version = "3.7.0"
 
   # insert the 21 required variables here
-  name = var.vpc_name
+  name = "${var.naming_id_prefix}-vpc"
   cidr = var.vpc_cidr
 
   azs = ["${var.region}a", "${var.region}b", "${var.region}c"]
