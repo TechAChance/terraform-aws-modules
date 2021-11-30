@@ -4,7 +4,7 @@ variable "region" {
   description = "The region where to provision aws services."
   type        = string
 }
-variable "var.naming_id_prefix" {
+variable "naming_id_prefix" {
   description = "The region where to provision aws services."
   type        = string
 }
