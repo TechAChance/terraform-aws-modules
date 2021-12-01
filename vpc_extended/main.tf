@@ -16,13 +16,14 @@ module "vpc" {
   # elasticache_subnets = ["10.10.31.0/24", "10.10.32.0/24", "10.10.33.0/24"]
   # redshift_subnets    = ["10.10.41.0/24", "10.10.42.0/24", "10.10.43.0/24"]
 
-  create_database_subnet_group = var.create_database_subnet_group
+  manage_default_route_table = var.manage_default_route_table
+  default_route_table_tags   = merge(var.global_tags, { default_route_table = true })
 
-  manage_default_route_table         = true
-  create_database_subnet_route_table = var.create_database_subnet_route_table
+  create_database_subnet_group       = var.create_database_subnet
+  create_database_subnet_route_table = var.create_database_subnet
+
   # create_elasticache_subnet_route_table = true
   # create_redshift_subnet_route_table    = true
-  default_route_table_tags = { DefaultRouteTable = true }
 
   enable_dns_hostnames = var.enable_dns_hostnames
   enable_dns_support   = true
@@ -47,8 +48,14 @@ module "security_group_public" {
   description = "Security group with HTTP(s) port open for everyone."
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["https-443-tcp"]
-  ingress_with_self   = [{ rule = "all-all" }]
+  ingress_rules       = ["https-443-tcp", "https-8443-tcp"]
+  ingress_with_source_security_group_id = [
+    {
+      rule                     = "all-all"
+      source_security_group_id = module.security_group_bastion.security_group_id
+    }
+  ]
+  ingress_with_self = [{ rule = "all-all" }]
 
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules       = ["all-all"]
@@ -71,7 +78,15 @@ module "security_group_private" {
       source_security_group_id = module.security_group_public.security_group_id
     },
     {
+      rule                     = "http-8080-tcp"
+      source_security_group_id = module.security_group_public.security_group_id
+    },
+    {
       rule                     = "https-443-tcp"
+      source_security_group_id = module.security_group_public.security_group_id
+    },
+    {
+      rule                     = "https-8443-tcp"
       source_security_group_id = module.security_group_public.security_group_id
     },
     {
@@ -95,7 +110,7 @@ module "security_group_private" {
 module "security_group_database" {
   source = "terraform-aws-modules/security-group/aws"
 
-  create = var.create_security_group_database
+  create = var.create_database_subnet
 
   vpc_id      = module.vpc.vpc_id
   name        = "${var.naming_id_prefix}-database-sg"
@@ -110,11 +125,22 @@ module "security_group_database" {
       rule                     = "mysql-tcp"
       source_security_group_id = module.security_group_private.security_group_id
     },
-    ##TODO: make this part is conditional or always add quicksight sg
-    # {
-    #   rule                     = "mysql-tcp"
-    #   source_security_group_id = module.security_group_quicksight.security_group_id
-    # },
+    {
+      rule                     = "postgresql-tcp"
+      source_security_group_id = module.security_group_public.security_group_id
+    },
+    {
+      rule                     = "postgresql-tcp"
+      source_security_group_id = module.security_group_private.security_group_id
+    },
+    {
+      rule                     = "mssql-tcp"
+      source_security_group_id = module.security_group_public.security_group_id
+    },
+    {
+      rule                     = "mssql-tcp"
+      source_security_group_id = module.security_group_private.security_group_id
+    },
     {
       rule                     = "all-all"
       source_security_group_id = module.security_group_bastion.security_group_id
@@ -146,7 +172,7 @@ module "security_group_bastion" {
   ingress_with_cidr_blocks = [
     {
       rule        = "ssh-tcp"
-      cidr_blocks = "82.65.219.56/32"
+      cidr_blocks = var.bastion_ingress_cidr_blocks
     },
   ]
 
@@ -165,13 +191,24 @@ module "security_group_quicksight" {
 
   vpc_id      = module.vpc.vpc_id
   name        = "${var.naming_id_prefix}-quicksight-sg"
-  description = "Security group for Amazon Quickgth for MySQL/Aurora/MariaDB/... access"
+  description = "Security group for Amazon Quicksigth for MySQL/Aurora/MariaDB/PostgreSql... access"
 
-  ingress_with_source_security_group_id = [
+  ingress_with_cidr_blocks = [
     {
-      rule                     = "all-all"
-      source_security_group_id = module.security_group_database.security_group_id
-    }
+      rule        = "mysql-tcp"
+      cidr_blocks = "52.210.255.224/27,35.158.127.192/27,35.177.218.0/27"
+      description = "Allow access from Quicksight Ireland/Frankfurt/London to Mysql port"
+    },
+    {
+      rule        = "postgresql-tcp"
+      cidr_blocks = "52.210.255.224/27,35.158.127.192/27,35.177.218.0/27"
+      description = "Allow access from Quicksight Ireland/Frankfurt/London to PostgreSQL port"
+    },
+    {
+      rule        = "mssql-tcp"
+      cidr_blocks = "52.210.255.224/27,35.158.127.192/27,35.177.218.0/27"
+      description = "Allow access from Quicksight Ireland/Frankfurt/London to MSSQL port"
+    },
   ]
   # ingress_with_self = [{ rule = "all-all" }]
 
@@ -179,10 +216,6 @@ module "security_group_quicksight" {
   egress_rules       = ["all-all"]
 
   tags = var.global_tags
-
-  depends_on = [
-    module.security_group_database
-  ]
 }
 
 # ingress_with_source_security_group_id = [

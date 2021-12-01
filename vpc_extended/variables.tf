@@ -35,11 +35,11 @@ variable "vpc_database_subnets" {
   type        = list(string)
   default     = ["10.0.21.0/24", "10.0.22.0/24", "10.0.23.0/24"]
 }
-variable "create_database_subnet_group" {
+variable "manage_default_route_table" {
   type    = bool
   default = true
 }
-variable "create_database_subnet_route_table" {
+variable "create_database_subnet" {
   type    = bool
   default = true
 }
@@ -51,9 +51,10 @@ variable "enable_nat_gateway" {
   type    = bool
   default = false
 }
-variable "create_security_group_database" {
-  type    = bool
-  default = true
+# Security Group
+variable "bastion_ingress_cidr_blocks" {
+  description = "The CIDR blocks that allow SSH access to bastion SG"
+  type        = string
 }
 variable "create_security_group_quicksight" {
   type    = bool
