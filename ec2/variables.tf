@@ -41,7 +41,7 @@ variable "public" {
 }
 variable "vpc_security_group_ids" {
   description = "The security group(s)."
-  type        = string
+  type        = list(any)
 }
 variable "subnet_id" {
   description = "The subnet"
