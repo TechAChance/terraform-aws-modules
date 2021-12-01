@@ -1,5 +1,5 @@
 ####################################################################################################
-## GLOBAL
+### GLOBAL
 variable "naming_id_prefix" {
   description = "The region where to provision aws services."
   type        = string
@@ -9,9 +9,8 @@ variable "global_tags" {
   type        = map(any)
   default     = {}
 }
-
 ####################################################################################################
-## EC2
+### EC2
 variable "name" {
   description = "Name"
   type        = string

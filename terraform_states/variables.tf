@@ -1,5 +1,5 @@
 ####################################################################################################
-## GLOBAL
+### GLOBAL
 variable "states_region" {
   description = "The region where the terrstates are stored."
   type        = string

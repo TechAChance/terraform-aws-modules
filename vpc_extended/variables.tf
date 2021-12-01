@@ -1,5 +1,5 @@
 ####################################################################################################
-## GLOBAL
+### GLOBAL
 variable "region" {
   description = "The region where to provision aws services."
   type        = string
@@ -14,7 +14,7 @@ variable "global_tags" {
   default     = {}
 }
 ####################################################################################################
-## VPC
+### VPC
 variable "vpc_cidr" {
   description = "The CIDR of the VPC."
   type        = string

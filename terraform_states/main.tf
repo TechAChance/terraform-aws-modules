@@ -1,14 +1,5 @@
-############
-# PROVIDER #
-############
-
-provider "aws" {
-  region = var.states_region
-}
-
-###########################
-# LOCAL VARIABLES / DATAS #
-###########################
+####################################################################################################
+### LOCAL VARIABLES / DATAS
 
 locals {
   org_scope = ((var.org == var.scope) ? var.org : "${var.org}-${var.scope}")
@@ -24,9 +15,8 @@ locals {
   }
 }
 
-####################
-# STATES S3 BUCKET #
-####################
+####################################################################################################
+### STATES S3 BUCKET
 
 resource "aws_s3_bucket" "terraform_states" {
   bucket = "${local.org_scope}-${var.environment}-terrstates"
@@ -52,9 +42,8 @@ resource "aws_s3_bucket" "terraform_states" {
   }
 }
 
-##################
-# DYNAMODB TABLE #
-##################
+####################################################################################################
+### DYNAMODB TABLE
 
 resource "aws_dynamodb_table" "terraform_locks" {
   name         = "${local.org_scope}-${var.environment}-terrlocks"

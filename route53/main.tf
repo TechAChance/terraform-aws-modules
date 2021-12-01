@@ -1,6 +1,5 @@
-############
-# ROUTE 53 #
-############
+####################################################################################################
+### ROUTE 53
 
 resource "aws_route53_zone" "zones" {
   for_each = var.create_route_53_zones ? var.route_53_zones : tomap({})

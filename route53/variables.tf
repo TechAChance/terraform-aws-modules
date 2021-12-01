@@ -1,5 +1,5 @@
 ####################################################################################################
-## GLOBAL
+### GLOBAL
 variable "vpc_id" {
   description = "The id of the VPC."
   type        = string
@@ -13,8 +13,8 @@ variable "global_tags" {
   type        = map(any)
   default     = {}
 }
-
-## Route 53
+####################################################################################################
+### ROUTE 53
 variable "create_route_53_zones" {
   description = "Whether to create Route53 zone"
   type        = bool
