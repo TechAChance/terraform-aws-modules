@@ -1,1 +1,1 @@
-../_shared_/versions.tf
+../_common_/versions.tf
