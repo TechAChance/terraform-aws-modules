@@ -43,21 +43,13 @@ variable "public" {
   type        = bool
   default     = false
 }
-variable "public_sg" {
-  description = "The public security group."
+variable "vpc_security_group_ids" {
+  description = "The security group(s)."
   type        = string
 }
-variable "private_sg" {
-  description = "The private security group."
+variable "subnet_id" {
+  description = "The subnet"
   type        = string
-}
-variable "public_subnets" {
-  description = "The public subnets"
-  type        = list(any)
-}
-variable "private_subnets" {
-  description = "The private subnets"
-  type        = list(any)
 }
 variable "ebs_optimized" {
   description = ""
