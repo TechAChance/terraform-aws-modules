@@ -38,6 +38,7 @@ module "vpc" {
   tags = var.global_tags
 }
 
+### SECURITY GROUPS
 module "security_group_public" {
   source = "terraform-aws-modules/security-group/aws"
 
