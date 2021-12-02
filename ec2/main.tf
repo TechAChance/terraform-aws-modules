@@ -28,6 +28,6 @@ module "ec2_instance" {
 resource "aws_eip" "eip" {
   count = var.elastic_ip ? 1 : 0
 
-  instance = module.ec2_instance.web.id
+  instance = module.ec2_instance.id
   vpc      = true
 }
