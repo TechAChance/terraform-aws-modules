@@ -39,6 +39,11 @@ variable "public" {
   type        = bool
   default     = false
 }
+variable "elastic_ip" {
+  description = ""
+  type        = bool
+  default     = false
+}
 variable "vpc_security_group_ids" {
   description = "The security group(s)."
   type        = list(any)

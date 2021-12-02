@@ -24,3 +24,10 @@ module "ec2_instance" {
 
   tags = var.global_tags
 }
+
+resource "aws_eip" "eip" {
+  count = var.elastic_ip ? 1 : 0
+
+  instance = module.ec2_instance.web.id
+  vpc      = true
+}
