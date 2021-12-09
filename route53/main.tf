@@ -33,4 +33,6 @@ resource "aws_acm_certificate" "cert" {
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on [ aws_route53_zone.zones ]
 }
