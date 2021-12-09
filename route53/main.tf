@@ -34,5 +34,5 @@ resource "aws_acm_certificate" "cert" {
     create_before_destroy = true
   }
 
-  depends_on [ aws_route53_zone.zones ]
+  depends_on = [ aws_route53_zone.zones ]
 }
