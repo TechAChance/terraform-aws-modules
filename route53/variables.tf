@@ -20,7 +20,6 @@ variable "create_route_53_zones" {
   type        = bool
   default     = false
 }
-
 variable "route_53_zones" {
   description = "Map of Route53 zone parameters"
   type        = any

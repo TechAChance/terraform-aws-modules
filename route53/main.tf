@@ -8,9 +8,12 @@ resource "aws_route53_zone" "zones" {
   comment       = lookup(each.value, "comment", null)
   force_destroy = lookup(each.value, "force_destroy", false)
 
-  vpc {
-    vpc_id     = var.vpc_id
-    vpc_region = var.region
+  dynamic "vpc" {
+    for_each = each.value.public ? [1] : []
+    content {
+      vpc_id     = var.vpc_id
+      vpc_region = var.region
+    }
   }
 
   tags = var.global_tags
