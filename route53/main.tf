@@ -19,9 +19,10 @@ resource "aws_route53_zone" "zones" {
 resource "aws_acm_certificate" "cert" {
 
   for_each = {
-    for route_53_zone in var.route_53_zones : route_53_zone.create_certificate => {
+    for route_53_zone in var.route_53_zones : route_53_zone.domain_name => {
       domain_name = route_53_zone.domain_name
-    }
+    } if route_53_zone.create_certificate
+
   }
 
   domain_name       = each.value.domain_name
