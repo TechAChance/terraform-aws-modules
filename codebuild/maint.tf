@@ -133,7 +133,18 @@ resource "aws_codebuild_project" "codebuild" {
       name  = "S3BUCKET_CACHE"
       value = aws_s3_bucket.cache_bucket.bucket
     }
-
+    environment_variable {
+      name  = "ENVIRONMENT"
+      value = var.global_tags.environment
+    }
+    environment_variable {
+      name  = "SCOPE"
+      value = var.global_tags.scope
+    }
+    environment_variable {
+      name  = "SERVICE"
+      value = var.global_tags.service
+    }
     # environment_variable {
     #   name  = "SOME_KEY2"
     #   value = "SOME_VALUE2"
