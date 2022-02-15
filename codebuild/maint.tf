@@ -8,8 +8,12 @@ locals {
 
 resource "aws_s3_bucket" "cache_bucket" {
   bucket = "${var.naming_id_prefix}-${var.project}-codebuild-cache"
-  acl    = "private"
   tags   = var.global_tags
+}
+
+resource "aws_s3_bucket_acl" "cache_bucket_acl" {
+  bucket = aws_s3_bucket.cache_bucket.id
+  acl    = "private"
 }
 
 resource "aws_iam_role" "codebuild-role" {
