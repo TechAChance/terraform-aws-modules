@@ -12,16 +12,25 @@ variable "scope" {
   description = "The scope of the service deployment."
   type        = string
 }
+variable "platform_region" {
+  description = "The platform_region name."
+  type        = string
+  default     = ""
+}
+variable "global_prefix" {
+  description = "The global prefix."
+  type        = string
+}
 variable "environment" {
   description = "Environment/Account where to create AWS services (dev, sand, stag, prod)."
   type        = string
 }
-variable "region" {
-  description = "The region where to provision AWS services."
-  type        = string
-}
 variable "service" {
   description = "The service to be provisionned."
+  type        = string
+}
+variable "region" {
+  description = "The region where to provision AWS services."
   type        = string
 }
 variable "deployed_by" {

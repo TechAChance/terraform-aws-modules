@@ -3,7 +3,8 @@
 
 locals {
   # org or org-scppe
-  global_prefix        = (((var.org == var.scope) || (var.scope == "")) ? var.org : "${var.org}-${var.scope}")
+  global_prefix = var.global_prefix
+  # (((var.org == var.scope) || (var.scope == "")) ? var.org : "${var.org}-${var.scope}")
   is_default_workspace = (terraform.workspace == "default") # Check if default workspace means provision environment (dev, sandbox, stag, prod)                                                                                                          # business unit
   # org-scope-env or org-scope-workspace
   id_prefix        = (local.is_default_workspace ? "${local.global_prefix}-${var.environment}" : "${local.global_prefix}-${terraform.workspace}") # environment (dev, sandbox, stag, prod) or workspace

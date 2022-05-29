@@ -10,18 +10,28 @@ variable "scope" {
   type        = string
   default     = ""
 }
-variable "environment" {
-  description = "Environment/Account where to create AWS services (dev, sand, stag, prod)."
+variable "platform_region" {
+  description = "The platform_region name."
   type        = string
   default     = ""
 }
-variable "region" {
-  description = "The region where to provision aws services."
+variable "global_prefix" {
+  description = "The global prefix."
+  type        = string
+  default     = ""
+}
+variable "environment" {
+  description = "Environment/Account where to create AWS services (dev, sbx, tst, dmo, sit, uat, stg, prd)."
   type        = string
   default     = ""
 }
 variable "service" {
   description = "The service to be provisionned."
+  type        = string
+  default     = ""
+}
+variable "region" {
+  description = "The region where to provision aws services."
   type        = string
   default     = ""
 }
