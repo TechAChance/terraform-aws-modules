@@ -1,19 +1,4 @@
 ####################################################################################################
-### GLOBAL
-variable "region" {
-  description = "The region where to provision aws services."
-  type        = string
-}
-variable "naming_id_prefix" {
-  description = "The region where to provision aws services."
-  type        = string
-}
-variable "global_tags" {
-  description = "map of tags"
-  type        = map(any)
-  default     = {}
-}
-####################################################################################################
 ### VPC
 variable "vpc_cidr" {
   description = "The CIDR of the VPC."
@@ -52,9 +37,10 @@ variable "enable_nat_gateway" {
   default = false
 }
 # Security Group
-variable "bastion_ingress_cidr_blocks" {
-  description = "The CIDR blocks that allow SSH access to bastion SG"
-  type        = string
+variable "bastion_ips_whitelist" {
+  description = "List of IPs to whitelist on the Bastion security group"
+  type        = any
+  default     = {}
 }
 variable "create_security_group_quicksight" {
   type    = bool

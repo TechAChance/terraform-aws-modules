@@ -20,7 +20,7 @@ variable "global_prefix" {
   type        = string
   default     = ""
 }
-variable "environment" {
+variable "env" {
   description = "Environment/Account where to create AWS services (dev, sbx, tst, dmo, sit, uat, stg, prd)."
   type        = string
   default     = ""

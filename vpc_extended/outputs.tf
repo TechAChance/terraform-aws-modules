@@ -3,6 +3,10 @@ output "vpc_id" {
   description = "The ID of the VPC"
   value       = module.vpc.vpc_id
 }
+output "vpc_cidr" {
+  description = "The CIDR of the VPC"
+  value       = module.vpc.vpc_cidr_block
+}
 ## SUBNETS
 output "public_subnets" {
   description = "List of IDs of public subnets"
@@ -16,6 +20,15 @@ output "database_subnets" {
   description = "List of IDs of database subnets"
   value       = module.vpc.database_subnets
 }
+output "database_subnets_cidr_blocks" {
+  description = "List of CIDR blocks of database subnets"
+  value       = module.vpc.database_subnets_cidr_blocks
+}
+output "database_subnet_group_name" {
+  description = "the name of database subnets group"
+  value       = module.vpc.database_subnet_group_name
+}
+
 # # NAT gateways
 # output "nat_public_ips" {
 #   description = "List of public Elastic IPs created for AWS NAT Gateway"

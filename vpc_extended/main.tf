@@ -40,6 +40,43 @@ module "vpc" {
 
 ####################################################################################################
 ### SECURITY GROUPS
+locals {
+  bastion_cidr_blocks = join(",", [for key, value in var.bastion_ips_whitelist : value.ip])
+}
+module "security_group_bastion" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  create = true
+
+  vpc_id      = module.vpc.vpc_id
+  name        = "${var.naming_id_prefix}-bastion-sg"
+  description = "Security group with SSH port open for Bastions connections"
+
+  ingress_with_cidr_blocks = [
+    {
+      rule        = "ssh-tcp"
+      cidr_blocks = local.bastion_cidr_blocks
+      description = "Allow ssh access"
+    },
+    {
+      rule        = "http-80-tcp"
+      cidr_blocks = local.bastion_cidr_blocks
+      description = "Allow http access"
+    },
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = local.bastion_cidr_blocks
+      description = "Allow https access"
+    },
+  ]
+  ingress_with_self = [{ rule = "all-all" }]
+
+  egress_cidr_blocks = ["0.0.0.0/0"]
+  egress_rules       = ["all-all"]
+
+  tags = var.global_tags
+}
+
 module "security_group_public" {
   source = "terraform-aws-modules/security-group/aws"
 
@@ -55,9 +92,10 @@ module "security_group_public" {
     {
       rule                     = "all-all"
       source_security_group_id = module.security_group_bastion.security_group_id
+      description              = "Allow all from Bastion"
     }
   ]
-  ingress_with_self = [{ rule = "all-all" }]
+  ingress_with_self = [{ rule = "all-all", description = "Allow all from self" }]
 
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules       = ["all-all"]
@@ -78,35 +116,35 @@ module "security_group_private" {
     {
       rule                     = "http-80-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow 80 from Public SG"
     },
     {
       rule                     = "http-8080-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow 8080 from Public SG"
     },
     {
       rule                     = "https-443-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow 443 from Public SG"
     },
     {
       rule                     = "https-8443-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow 8443 from Public SG"
     },
     {
       rule                     = "all-all"
       source_security_group_id = module.security_group_bastion.security_group_id
+      description              = "Allow all from Bastion"
     }
   ]
-  ingress_with_self = [{ rule = "all-all" }]
+  ingress_with_self = [{ rule = "all-all", description = "Allow all from self" }]
 
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules       = ["all-all"]
 
   tags = var.global_tags
-
-  depends_on = [
-    module.security_group_public,
-    module.security_group_bastion
-  ]
 }
 
 module "security_group_database" {
@@ -118,67 +156,45 @@ module "security_group_database" {
   name        = "${var.naming_id_prefix}-database-sg"
   description = "Security group with MySQL/Aurora/MariaDB ports open from public and private"
 
+  ## TODO: remove access from public sg ?
   ingress_with_source_security_group_id = [
     {
       rule                     = "mysql-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow MySQL from Public SG"
     },
     {
       rule                     = "mysql-tcp"
       source_security_group_id = module.security_group_private.security_group_id
+      description              = "Allow MySQL from Private SG"
     },
     {
       rule                     = "postgresql-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow PostgreSQL from Public SG"
     },
     {
       rule                     = "postgresql-tcp"
       source_security_group_id = module.security_group_private.security_group_id
+      description              = "Allow PostgreSQL from Private SG"
     },
     {
       rule                     = "mssql-tcp"
       source_security_group_id = module.security_group_public.security_group_id
+      description              = "Allow MS SQL from Public SG"
     },
     {
       rule                     = "mssql-tcp"
       source_security_group_id = module.security_group_private.security_group_id
+      description              = "Allow MS SQL from Private SG"
     },
     {
       rule                     = "all-all"
       source_security_group_id = module.security_group_bastion.security_group_id
+      description              = "Allow all from Bastion"
     },
   ]
-  ingress_with_self = [{ rule = "all-all" }]
-
-  egress_cidr_blocks = ["0.0.0.0/0"]
-  egress_rules       = ["all-all"]
-
-  tags = var.global_tags
-
-  depends_on = [
-    module.security_group_public,
-    module.security_group_private,
-    module.security_group_bastion
-  ]
-}
-
-module "security_group_bastion" {
-  source = "terraform-aws-modules/security-group/aws"
-
-  create = true
-
-  vpc_id      = module.vpc.vpc_id
-  name        = "${var.naming_id_prefix}-bastion-sg"
-  description = "Security group with SSH port open for Bastions connections"
-
-  ingress_with_cidr_blocks = [
-    {
-      rule        = "ssh-tcp"
-      cidr_blocks = var.bastion_ingress_cidr_blocks
-    },
-  ]
-
-  ingress_with_self = [{ rule = "all-all" }]
+  ingress_with_self = [{ rule = "all-all", description = "Allow all from self" }]
 
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules       = ["all-all"]
