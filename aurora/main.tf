@@ -66,6 +66,8 @@ module "aurora_cluster" {
 
   apply_immediately = var.apply_immediately
 
+  create_db_parameter_group  = true
+  create_db_cluster_parameter_group = true
   db_parameter_group_name         = var.db_parameter_group_name
   db_cluster_parameter_group_name = var.db_cluster_parameter_group_name
 

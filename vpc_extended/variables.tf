@@ -40,7 +40,6 @@ variable "enable_nat_gateway" {
 variable "bastion_ips_whitelist" {
   description = "List of IPs to whitelist on the Bastion security group"
   type        = any
-  default     = {}
 }
 variable "create_security_group_quicksight" {
   type    = bool
