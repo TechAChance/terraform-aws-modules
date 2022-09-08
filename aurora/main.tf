@@ -66,10 +66,10 @@ module "aurora_cluster" {
 
   apply_immediately = var.apply_immediately
 
-  create_db_parameter_group  = true
-  create_db_cluster_parameter_group = true
-  db_parameter_group_name         = var.db_parameter_group_name
-  db_cluster_parameter_group_name = var.db_cluster_parameter_group_name
+  # create_db_parameter_group  = true
+  # create_db_cluster_parameter_group = true
+  # db_parameter_group_name         = var.db_parameter_group_name
+  # db_cluster_parameter_group_name = var.db_cluster_parameter_group_name
 
   # Enhanced Monitoring - see example for details on how to create the role
   # by yourself, in case you don't want to create it automatically
